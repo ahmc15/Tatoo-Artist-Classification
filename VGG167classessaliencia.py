@@ -1,4 +1,5 @@
 # importação da bibliotecas
+import os
 import numpy as np
 import xlsxwriter
 import matplotlib.pyplot as pyplot
@@ -8,7 +9,7 @@ import time
 import matplotlib.pyplot as plt
 import pandas as pd
 import keras
-from keras import models
+from keras import models, activations
 from keras.models import Sequential
 from keras.layers import Activation
 from keras.layers.core import Dense, Flatten
@@ -17,34 +18,29 @@ from keras.metrics import categorical_crossentropy
 from keras.preprocessing.image import ImageDataGenerator
 from keras.layers.convolutional import *
 from keras.applications.vgg16 import VGG16
-from keras.applications.vgg19 import preprocess_input, decode_predictions
 from keras.preprocessing import image
 from keras.models import Model
 from collections import defaultdict
-import itertools
 from sklearn.metrics import confusion_matrix, classification_report, precision_recall_fscore_support
 import matplotlib.cm as cm
 from vis.utils import utils
-from keras import activations
-from vis.utils import utils
 from vis.visualization import visualize_saliency, overlay, visualize_cam
-from vis.utils import utils
-from keras import activations
-import os
+
 
 np.random.seed(2017)
 
 #import cv2
 
+
 def pandas_classification_report(y_true, y_pred):
     metrics_summary = precision_recall_fscore_support(
-            y_true=y_true,
-            y_pred=y_pred)
+        y_true=y_true,
+        y_pred=y_pred)
 
     avg = list(precision_recall_fscore_support(
-            y_true=y_true,
-            y_pred=y_pred,
-            average='weighted'))
+        y_true=y_true,
+        y_pred=y_pred,
+        average='weighted'))
 
     metrics_sum_index = ['precision', 'recall', 'f1-score', 'support']
     class_report_df = pd.DataFrame(
@@ -58,6 +54,8 @@ def pandas_classification_report(y_true, y_pred):
     class_report_df['avg / total'] = avg
 
     return class_report_df.T
+
+
 def report2dict(cr):
     # Parse rows
     tmp = list()
@@ -76,7 +74,8 @@ def report2dict(cr):
             D_class_data[class_label][m.strip()] = float(row[j + 1].strip())
     return D_class_data
 
-for counter in range(5,7):
+
+for counter in range(5, 7):
     # Constantes da Simulação ou caso
     row = 0
     col = 0
@@ -91,31 +90,32 @@ for counter in range(5,7):
     num_of_train_samples = 1333
     num_of_valid_samples = 351
     num_of_test_samples = 169
-    class_names = ['krishtattoo', 'mattbeckerich', 'arzabe','pabloortiz', 'mikeridenball','manuraccoon','dynoz']
+    class_names = ['krishtattoo', 'mattbeckerich', 'arzabe',
+                   'pabloortiz', 'mikeridenball', 'manuraccoon', 'dynoz']
 
     # preprocessamento das imagens
     train_path = 'C:/Users/Adm/Desktop/Código tcc/dataset7class/train'
     valid_path = 'C:/Users/Adm/Desktop/Código tcc/dataset7class/valid'
     test_path = 'C:/Users/Adm/Desktop/Código tcc/dataset7class/test'
-    imgDIR=('C:/Users/Adm/Desktop/Código tcc/dataset7class/test/arzabe/')
+    imgDIR = ('C:/Users/Adm/Desktop/Código tcc/dataset7class/test/arzabe/')
     figpath = 'C:/Users/Adm/Desktop/Código tcc/code7classes/saliencia/'
-    arqui= 'fcteste_'
+    arqui = 'fcteste_'
 
-    train_datagen = ImageDataGenerator(#rescale=1. / 255,
-    #                                   rotation_range=40,
-    #                                   width_shift_range=0.2,
-    #                                   height_shift_range=0.2,
-    #                                   shear_range=0.2,
-                                       zoom_range=0.2,
-                                       horizontal_flip=True,
-                                       fill_mode='nearest')
+    train_datagen = ImageDataGenerator(  # rescale=1. / 255,
+        #                                   rotation_range=40,
+        #                                   width_shift_range=0.2,
+        #                                   height_shift_range=0.2,
+        #                                   shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True,
+        fill_mode='nearest')
     #train_datagen = ImageDataGenerator()
     train_batches = train_datagen.flow_from_directory(
         train_path, target_size=(img_rows, img_cols), classes=class_names, batch_size=train_batch_size)
     valid_batches = ImageDataGenerator().flow_from_directory(
         valid_path, target_size=(img_rows, img_cols), classes=class_names, batch_size=valid_batch_size)
     test_batches = ImageDataGenerator().flow_from_directory(
-        test_path, target_size=(img_rows, img_cols), classes=class_names, batch_size=test_batch_size, shuffle = False)
+        test_path, target_size=(img_rows, img_cols), classes=class_names, batch_size=test_batch_size, shuffle=False)
     # imgs, labels = next(train_batches)
     # plots(imgs, titles=labels)
 
@@ -145,8 +145,9 @@ for counter in range(5,7):
                                   validation_data=valid_batches, validation_steps=num_of_valid_samples // valid_batch_size, epochs=epochs)
     # list all data in history
     print(history.history.keys())
-    #saving training data to excel spreadsheet
-    workbook = xlsxwriter.Workbook(figpath+str(nclasses)+'classes_'+arqui+'_treinamento'+str(counter)+'.xlsx')
+    # saving training data to excel spreadsheet
+    workbook = xlsxwriter.Workbook(figpath+str(nclasses)+'classes_' +
+                                   arqui+'_treinamento'+str(counter)+'.xlsx')
     worksheet = workbook.add_worksheet()
     # list all data in history
     print(history.history.keys())
@@ -180,7 +181,7 @@ for counter in range(5,7):
     plt.legend(['Treino', 'Validação'], loc='upper left')
     plt.savefig(figpath+str(nclasses)+'classes_'+arqui+str(counter)+'Perda'+'.png')
 
-    #save model weights
+    # save model weights
     model.save(figpath+str(nclasses)+'classes_'+arqui+str(counter)+'weights.h5')
     print('Model saved to H5 file')
     # Tutorial @ https://machinelearningmastery.com/display-deep-learning-model-training-history-in-keras/
@@ -194,7 +195,7 @@ for counter in range(5,7):
     print(y_pred)
     print(true_classes)
 
-    eval=model.evaluate_generator(test_batches,steps=num_of_test_samples // test_batch_size)
+    eval = model.evaluate_generator(test_batches, steps=num_of_test_samples // test_batch_size)
     print("Accuracy = ", eval[1])
     with open(figpath+str(nclasses)+'classes_'+arqui+'_teste_perda_acuracia'+str(counter)+'.txt', 'w') as f:
         for item in eval:
@@ -203,7 +204,6 @@ for counter in range(5,7):
     confusion_m = confusion.astype('float') / confusion.sum(axis=1)[:, np.newaxis]
     print(confusion)
     print(confusion_m)
-
 
     plt.figure(figsize=(14, 10))
     ax = sns.heatmap(confusion_m, cmap="YlGnBu", annot=confusion, fmt='d', vmin=0, vmax=1)
@@ -214,46 +214,50 @@ for counter in range(5,7):
     plt.savefig(figpath+str(nclasses)+'classes_'+arqui+'_matrix'+str(counter)+'.png')
 
     report2dict(classification_report(true_classes, y_pred, target_names=class_names))
-    report = pd.DataFrame(report2dict(classification_report(true_classes, y_pred, target_names=class_names))).T
+    report = pd.DataFrame(report2dict(classification_report(
+        true_classes, y_pred, target_names=class_names))).T
     report.to_csv(figpath+str(nclasses)+'classes_'+arqui+'_scoref1_'+str(counter)+'.csv')
 
     matriz = pd.DataFrame(confusion)
     matriz.to_csv(figpath+str(nclasses)+'classes_'+arqui+'_confusion_numero'+str(counter)+'.csv')
     matrizcsv = pd.DataFrame(confusion_m)
-    matrizcsv.to_csv(figpath+str(nclasses)+'classes_'+arqui+'_confusion_porcentagem'+str(counter)+'.csv')
+    matrizcsv.to_csv(figpath+str(nclasses)+'classes_'+arqui +
+                     '_confusion_porcentagem'+str(counter)+'.csv')
 
     layer_idx = utils.find_layer_idx(model, 'classificador')
 
     directory = os.fsencode(imgDIR)
     for file in os.listdir(directory):
-         filename = os.fsdecode(file)
-         if filename.endswith(".jpg"):
-             img1 = utils.load_img(imgDIR+filename, target_size=(224, 224))
-             #model.layers[layer_idx].activation = activations.softmax
-             #model = utils.apply_modifications(model)
-             plt.figure(figsize=(14, 10))
-             plt.subplot(2,4,1)
-             plt.imshow(img1)
-             plt.title(filename)
-             for filterU in range(0,7):
-                 grads=visualize_saliency(model, layer_idx, filter_indices= filterU, seed_input= img1)
-                 plt.subplot(2,4,2+filterU)
-                 plt.title(str(class_names[filterU]))
-                 plt.imshow(grads, cmap='jet')
-                 figManager = plt.get_current_fig_manager()
-                 figManager.full_screen_toggle()
-             plt.savefig(figpath+filename[0:-4]+'saliencia'+str(counter)+'.png')
-             plt.figure(figsize=(14, 10))
-             plt.subplot(2,4,1)
-             plt.imshow(img1)
-             plt.title(filename)
-             for filterU in range(0,7):
-                 grads=visualize_saliency(model, layer_idx, filter_indices= filterU, seed_input= img1)
-                 plt.subplot(2,4,2+filterU)
-                 plt.title(str(class_names[filterU]))
-                 jet_heatmap = np.uint8(cm.jet(grads)[..., :3] * 255)
-                 plt.imshow(overlay(jet_heatmap, img1))
-             plt.savefig(figpath+filename[0:-4]+'sobreposicao'+str(counter)+'.png')
-             continue
-         else:
-             continue
+        filename = os.fsdecode(file)
+        if filename.endswith(".jpg"):
+            img1 = utils.load_img(imgDIR+filename, target_size=(224, 224))
+            #model.layers[layer_idx].activation = activations.softmax
+            #model = utils.apply_modifications(model)
+            plt.figure(figsize=(14, 10))
+            plt.subplot(2, 4, 1)
+            plt.imshow(img1)
+            plt.title(filename)
+            for filterU in range(0, 7):
+                grads = visualize_saliency(
+                    model, layer_idx, filter_indices=filterU, seed_input=img1)
+                plt.subplot(2, 4, 2+filterU)
+                plt.title(str(class_names[filterU]))
+                plt.imshow(grads, cmap='jet')
+                figManager = plt.get_current_fig_manager()
+                figManager.full_screen_toggle()
+            plt.savefig(figpath+filename[0:-4]+'saliencia'+str(counter)+'.png')
+            plt.figure(figsize=(14, 10))
+            plt.subplot(2, 4, 1)
+            plt.imshow(img1)
+            plt.title(filename)
+            for filterU in range(0, 7):
+                grads = visualize_saliency(
+                    model, layer_idx, filter_indices=filterU, seed_input=img1)
+                plt.subplot(2, 4, 2+filterU)
+                plt.title(str(class_names[filterU]))
+                jet_heatmap = np.uint8(cm.jet(grads)[..., :3] * 255)
+                plt.imshow(overlay(jet_heatmap, img1))
+            plt.savefig(figpath+filename[0:-4]+'sobreposicao'+str(counter)+'.png')
+            continue
+        else:
+            continue
