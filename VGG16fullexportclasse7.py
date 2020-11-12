@@ -212,10 +212,10 @@ def Classificador(epocas, counter, tipoIMG):
     # imgDIR=('C:/Users/Adm/Desktop/Código tcc/dataset7class/test/mattbeckerich/')
     # figpath = 'C:/Users/Adm/Desktop/Código tcc/code7classes/'
     # arqui= 'segmentada_'
-    train_path = 'D:/KfoldsTatuadores/'+tipoIMG+'/fold'+str(counter)+'/train/'
-    valid_path = 'D:/KfoldsTatuadores/'+tipoIMG+'/fold'+str(counter)+'/valid/'
+    train_path = '/mnt/nas/AndreCosta/KfoldsTatuadores/'+tipoIMG+'/fold'+str(counter)+'/train/'
+    valid_path = '/mnt/nas/AndreCosta/KfoldsTatuadores/'+tipoIMG+'/fold'+str(counter)+'/valid/'
     # imgDIR=('C:/Users/Adm/Desktop/Código tcc/dataset7class/test/mattbeckerich/')
-    figpath = 'D:/resultadosClassificador/'
+    figpath = '/Resultados/'
     arqui = tipoIMG+'_'
     train_datagen = ImageDataGenerator(rescale=1. / 255,
                                        #                                   rotation_range=40,
