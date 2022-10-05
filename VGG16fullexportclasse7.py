@@ -1,3 +1,4 @@
+#!/opt/conda/bin python3
 # importação da bibliotecas
 import numpy as np
 import keras
@@ -92,14 +93,15 @@ def salvarExcelMetricas(history, figpath, nclasses, arqui, counter):
 
 
 def savefigtrain(history, figpath, nclasses, arqui, counter):
+    print(history)
     plt.figure()
-    plt.plot(history.history['acc'])
-    plt.plot(history.history['val_acc'])
+    plt.plot(history.history['accuracy'])
+    plt.plot(history.history['val_accuracy'])
     plt.title('Acurácia do Modelo')
     plt.ylabel('Acurácia')
     plt.xlabel('Épocas')
     plt.legend(['Treino', 'Validação'], loc='upper left')
-    plt.savefig(figpath+str(nclasses)+'classes_'+arqui+str(counter)+'Acuracia'+'.png')
+    plt.savefig(figpath+str(nclasses)+'classes_'+arqui+str(counter)+'Acuracia')
     # summarize history for loss
     plt.figure()
     plt.plot(history.history['loss'])
@@ -108,7 +110,7 @@ def savefigtrain(history, figpath, nclasses, arqui, counter):
     plt.ylabel('Perda')
     plt.xlabel('Épocas')
     plt.legend(['Treino', 'Validação'], loc='upper left')
-    plt.savefig(figpath+str(nclasses)+'classes_'+arqui+str(counter)+'Perda'+'.png')
+    plt.savefig(figpath+str(nclasses)+'classes_'+arqui+str(counter)+'Perda')
     print("Gráficos do Treinamento Salvos")
 
 
@@ -215,7 +217,7 @@ def Classificador(epocas, counter, tipoIMG):
     train_path = '/mnt/nas/AndreCosta/KfoldsTatuadores/'+tipoIMG+'/fold'+str(counter)+'/train/'
     valid_path = '/mnt/nas/AndreCosta/KfoldsTatuadores/'+tipoIMG+'/fold'+str(counter)+'/valid/'
     # imgDIR=('C:/Users/Adm/Desktop/Código tcc/dataset7class/test/mattbeckerich/')
-    figpath = '/Resultados/'
+    figpath = './Resultados/'
     arqui = tipoIMG+'_'
     train_datagen = ImageDataGenerator(rescale=1. / 255,
                                        #                                   rotation_range=40,
@@ -262,7 +264,7 @@ def main():
         ArquivoCSV = csv.reader(csvfile, delimiter=';')
         for row in ArquivoCSV:
             Parametros.append(row[0].split('\t'))
-    Parametros = Parametros[12:]
+    Parametros = Parametros[27:31]
 
     for linha in Parametros:
         epocas = int(linha[0])
