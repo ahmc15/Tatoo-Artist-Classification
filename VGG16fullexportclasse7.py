@@ -195,7 +195,7 @@ def Classificador(epocas, counter, tipoIMG):
     nclasses = 7
     img_rows = 224
     img_cols = 224
-    train_batch_size = 10
+    train_batch_size = 22
     valid_batch_size = 11
 
     if counter == 4:
