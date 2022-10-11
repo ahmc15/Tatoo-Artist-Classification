@@ -264,7 +264,7 @@ def main():
         ArquivoCSV = csv.reader(csvfile, delimiter=';')
         for row in ArquivoCSV:
             Parametros.append(row[0].split('\t'))
-    Parametros = Parametros[27:31]
+    Parametros = Parametros[17:27]
 
     for linha in Parametros:
         epocas = int(linha[0])
