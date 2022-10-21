@@ -243,7 +243,10 @@ def Classificador(epocas, counter, tipoIMG):
     # model.add(Dense(100, activation='softmax', name="classificador75"))
     model.add(Dense(nclasses, activation='softmax', name="classificador"))
     model.summary()
-    model.compile(optimizer='adadelta',
+    #model.compile(optimizer='adadelta',
+    #              loss='categorical_crossentropy',
+    #              metrics=['accuracy'])
+    model.compile(optimizer='RMSprop',
                   loss='categorical_crossentropy',
                   metrics=['accuracy'])
     history = model.fit_generator(train_batches, steps_per_epoch=num_of_train_samples // train_batch_size,
