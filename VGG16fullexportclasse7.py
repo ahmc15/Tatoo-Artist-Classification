@@ -246,7 +246,7 @@ def Classificador(epocas, counter, tipoIMG):
     #model.compile(optimizer='adadelta',
     #              loss='categorical_crossentropy',
     #              metrics=['accuracy'])
-    model.compile(optimizer='RMSprop',
+    model.compile(optimizer='rmsprop',
                   loss='categorical_crossentropy',
                   metrics=['accuracy'])
     history = model.fit_generator(train_batches, steps_per_epoch=num_of_train_samples // train_batch_size,
