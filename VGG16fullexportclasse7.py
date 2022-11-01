@@ -5,6 +5,7 @@ import keras
 import xlsxwriter
 from keras.models import Sequential
 from keras import models
+from keras import optimizers
 from keras.layers import Activation
 from keras.layers.core import Dense, Flatten
 from keras.optimizers import Adam
@@ -243,10 +244,11 @@ def Classificador(epocas, counter, tipoIMG):
     # model.add(Dense(100, activation='softmax', name="classificador75"))
     model.add(Dense(nclasses, activation='softmax', name="classificador"))
     model.summary()
+    optimizer_choice = SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
     #model.compile(optimizer='adadelta',
     #              loss='categorical_crossentropy',
     #              metrics=['accuracy'])
-    model.compile(optimizer='rmsprop',
+    model.compile(optimizer=optimizer_choice,
                   loss='categorical_crossentropy',
                   metrics=['accuracy'])
     history = model.fit_generator(train_batches, steps_per_epoch=num_of_train_samples // train_batch_size,
