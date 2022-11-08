@@ -244,7 +244,7 @@ def Classificador(epocas, counter, tipoIMG):
     # model.add(Dense(100, activation='softmax', name="classificador75"))
     model.add(Dense(nclasses, activation='softmax', name="classificador"))
     model.summary()
-    optimizer_choice = keras.optimizers.SGD(lr=0.001, decay=1e-6, momentum=0.9, nesterov=True)
+    optimizer_choice = keras.optimizers.SGD(lr=0.1, decay=1e-6, momentum=0.9, nesterov=True)
     #model.compile(optimizer='adadelta',
     #              loss='categorical_crossentropy',
     #              metrics=['accuracy'])
